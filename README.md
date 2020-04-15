@@ -1,3 +1,7 @@
+## Dev Settings
+
+Create a `.env` file and specify the variable `REACT_APP_API_BASE_URL=http://localhost:4001` where the port of that variable matches what you used for the API.
+
 ## Available Scripts
 
 In the project directory, you can run:

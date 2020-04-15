@@ -1,8 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import './App.css'
 
 export default class App extends Component {
   state = {
+    tvShows: [],
     userInput: {
       name: '',
       rating: 0,
@@ -17,24 +18,29 @@ export default class App extends Component {
       method: 'POST',
       mode: 'cors',
       headers: {
-        'Content-Type': 'application/json'
+        'content-type': 'application/json'
       },
       body: JSON.stringify(tvShow)
     })
 
-    if (response.status === 201) {
+    const successful = response.status === 201
+
+    if (successful) {
       this.setState({
         userInput: {
           name: '',
           rating: 0,
           imageUrl: ''
-        }
+        },
+        error: null
       })
     }
     else {
-      const result = await response.json()
+      const error = await response.json()
 
-      console.log('Error in post:', response, result)
+      this.setState({ error })
+
+      console.log(error)
     }
   }
 
@@ -65,6 +71,43 @@ export default class App extends Component {
     })
   }
 
+  renderError = () => {
+    return this.state.error
+      ? (<div>{this.state.error.message}</div>)
+      : (<Fragment />)
+  }
+
+  renderTVShows = () => {
+    return this.state.tvShows.map((tvShow) => {
+      return (<div key={tvShow.name}>{tvShow.name} <button>(delete)</button></div>)
+    })
+  }
+
+  getTVShows = async () => {
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/tv-shows`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'accept': 'application/json'
+      }
+    })
+
+    const successful = response.status === 200
+
+    if (successful) {
+      const tvShows = await response.json()
+
+      this.setState({ tvShows })
+    }
+    else {
+      console.log(response)
+    }
+  }
+
+  componentDidMount() {
+    this.getTVShows()
+  }
+
   render() {
     return (
       <div className="App">
@@ -76,12 +119,7 @@ export default class App extends Component {
           <section>
             <h2>Shows</h2>
             <div>
-              <div>
-                Show 1 <button>(delete)</button>
-              </div>
-              <div>
-                Show 2 <button>(delete)</button>
-              </div>
+              {this.renderTVShows()}
             </div>
           </section>
           <main>
@@ -98,6 +136,7 @@ export default class App extends Component {
               <label htmlFor="image-url-input">Image URL:</label>
               <input id="image-url-input" type="text" value={this.state.userInput.imageUrl} onChange={this.imageUrlChanged} />
             </div>
+            {this.renderError()}
             <button onClick={this.save}>Save</button>
           </main>
         </div>
