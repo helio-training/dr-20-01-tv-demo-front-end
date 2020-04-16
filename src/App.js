@@ -15,7 +15,7 @@ export default class App extends Component {
     const tvShow = this.state.userInput
 
     const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/tv-shows`, {
-      method: 'POST',
+      method: tvShow._id ? 'PUT' : 'POST',
       mode: 'cors',
       headers: {
         'content-type': 'application/json'
@@ -23,11 +23,11 @@ export default class App extends Component {
       body: JSON.stringify(tvShow)
     })
 
-    const successful = response.status === 201
+    const successful = response.status === 201 || response.status === 200
 
     if (successful) {
       await this.getTVShows()
-    
+
       this.setState({
         userInput: {
           name: '',
@@ -73,6 +73,19 @@ export default class App extends Component {
     })
   }
 
+  editTVShow = (event) => {
+    const tvShowId = event.target.id
+    const tvShow = this.state.tvShows.reduce((tvShowToEdit, tvShow) => {
+      return tvShow._id === tvShowId ? tvShow : tvShowToEdit
+    }, null)
+
+    if (tvShow) {
+      this.setState({
+        userInput: tvShow
+      })
+    }
+  }
+
   renderError = () => {
     return this.state.error
       ? (<div>{this.state.error.message}</div>)
@@ -81,7 +94,12 @@ export default class App extends Component {
 
   renderTVShows = () => {
     return this.state.tvShows.map((tvShow) => {
-      return (<div key={tvShow.name}>{tvShow.name} <button>(delete)</button></div>)
+      return (
+        <div key={tvShow._id}>
+          <button id={tvShow._id} onClick={this.editTVShow}>{tvShow.name}</button>
+          <button>(delete)</button>
+        </div>
+      )
     })
   }
 
