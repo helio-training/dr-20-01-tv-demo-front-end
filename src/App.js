@@ -26,6 +26,8 @@ export default class App extends Component {
     const successful = response.status === 201
 
     if (successful) {
+      await this.getTVShows()
+    
       this.setState({
         userInput: {
           name: '',
