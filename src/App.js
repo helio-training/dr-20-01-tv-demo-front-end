@@ -74,7 +74,7 @@ export default class App extends Component {
   }
 
   editTVShow = (event) => {
-    const tvShowId = event.target.id
+    const tvShowId = event.target.attributes.getNamedItem('tvshowid').value
     const tvShow = this.state.tvShows.reduce((tvShowToEdit, tvShow) => {
       return tvShow._id === tvShowId ? tvShow : tvShowToEdit
     }, null)
@@ -83,6 +83,21 @@ export default class App extends Component {
       this.setState({
         userInput: tvShow
       })
+    }
+  }
+
+  deleteTVShow = async (event) => {
+    const tvShowId = event.target.attributes.getNamedItem('tvshowid').value
+
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/tv-shows/${tvShowId}`, {
+      method: 'DELETE',
+      mode: 'cors'
+    })
+
+    const successful = response.status === 200
+
+    if (successful) {
+      await this.getTVShows()
     }
   }
 
@@ -96,8 +111,8 @@ export default class App extends Component {
     return this.state.tvShows.map((tvShow) => {
       return (
         <div key={tvShow._id}>
-          <button id={tvShow._id} onClick={this.editTVShow}>{tvShow.name}</button>
-          <button>(delete)</button>
+          <button tvshowid={tvShow._id} onClick={this.editTVShow}>{tvShow.name}</button>
+          <button tvshowid={tvShow._id} onClick={this.deleteTVShow}>(delete)</button>
         </div>
       )
     })
