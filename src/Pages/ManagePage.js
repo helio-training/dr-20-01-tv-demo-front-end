@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { getTVShows, saveTVShow, deleteTVShow } from '../TVShowsApi'
+import TVShowsList from '../TVShowsList'
 
 export default class extends Component {
     state = {
@@ -99,17 +100,6 @@ export default class extends Component {
             : (<Fragment />)
     }
 
-    renderTVShows = () => {
-        return this.state.tvShows.map((tvShow) => {
-            return (
-                <div key={tvShow._id}>
-                    <button tvshowid={tvShow._id} onClick={this.selectItem}>{tvShow.name}</button>
-                    <button tvshowid={tvShow._id} onClick={this.delete}>(delete)</button>
-                </div>
-            )
-        })
-    }
-
     componentDidMount() {
         this.loadData()
     }
@@ -122,12 +112,7 @@ export default class extends Component {
                     <a href="/">Preview</a>
                 </nav>
                 <div className="crud-area">
-                    <section>
-                        <h2>Shows</h2>
-                        <div>
-                            {this.renderTVShows()}
-                        </div>
-                    </section>
+                    <TVShowsList tvShows={this.state.tvShows} selectItem={this.selectItem} delete={this.delete} />
                     <main>
                         <h2>New/Edit Show</h2>
                         <div>
