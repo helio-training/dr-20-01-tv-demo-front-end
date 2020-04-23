@@ -107,10 +107,6 @@ export default class extends Component {
     render() {
         return (
             <div>
-                <nav>
-                    <a href="/">Manage</a>
-                    <a href="/">Preview</a>
-                </nav>
                 <div className="crud-area">
                     <TVShowsList tvShows={this.state.tvShows} selectItem={this.selectItem} delete={this.delete} />
                     <main>
