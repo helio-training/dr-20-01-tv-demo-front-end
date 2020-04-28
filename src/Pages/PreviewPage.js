@@ -54,7 +54,7 @@ export default class extends Component {
                                 <Fragment>
                                     <header>
                                         <h1>{this.state.tvShow.name}</h1>
-                                        <h2>{this.state.tvShow.rating}</h2>
+                                        <h2>Rating: {this.state.tvShow.rating}</h2>
                                     </header>
                                     <img src={this.state.tvShow.imageUrl} />
                                 </Fragment>
